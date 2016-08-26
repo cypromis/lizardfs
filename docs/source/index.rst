@@ -1,4 +1,4 @@
-.. LizardFS documentation master file, created by
+.. LizardFS documentation master file, created by Michal Bielicki
    sphinx-quickstart on Fri Aug 26 12:33:14 2016.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
@@ -15,6 +15,7 @@ Contents:
    installation
    quickinstall
    connectclient
+   advanced_config
 
 
 
