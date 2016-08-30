@@ -17,6 +17,7 @@ Contents:
    connectclient
    advanced_config
    upgrading
+   troubleshooting
 
 
 
