@@ -9,10 +9,15 @@ LizardFS is a distributed, scalable, fault-tolerant and highly available file sy
 Disk and server failures are handled transparently without any downtime or loss of data. If storage requirements grow, it’s possible to scale an existing LizardFS installation just by adding new servers - at any time, without any downtime. The system will automatically move some data to newly added servers, because it continuously takes care of balancing disk usage across all connected nodes. Removing servers is as easy as adding a new one. 
 
 Unique features like:
+
 * support for many data centers and media types,
+
 * fast snapshots,
+
 * transparent trash bin,
+
 * QoS mechanisms,
+
 * quotas
 
 and a comprehensive set of monitoring tools make it suitable for a range of enterprise-class applications.
@@ -67,7 +72,9 @@ Minimal configuration of LizardFS strongly depends on its use case. LizardFS wil
 Master / Shadow 
 
 * CPU - at least 2 GHz CPU, 64bit
+
 * RAM - depends on expected number of files (4GB should be enough for a small installation)
+
 * Disk - 128G, SSD would improve performance, HDD is fine
 
 Chunkserver - recommended 2GB RAM (or more)
@@ -87,6 +94,7 @@ LizardFS offers native support for LTO libraries. Storing archival backups may c
 Examples of tape goals can be found in chapter “Advanced configuration”.
 
 Setting a tape goal to a file makes it read-only for obvious reasons - tape storage does not support random writes. Reading from tape storage is a timely process (may last 48h or require manual work to insert correct tape to library), so data stored in there should be archival - meant to be read very rarely.
+
 The way of reading a file which is stored on tape depends on its situation:
 
 * If a regular copy of a file is still available, it will be used for reading
