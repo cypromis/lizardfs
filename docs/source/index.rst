@@ -16,6 +16,7 @@ Contents:
    quickinstall
    connectclient
    advanced_config
+   upgrading
 
 
 
