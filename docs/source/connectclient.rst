@@ -8,11 +8,11 @@ Linux client
 
 Install client package
 
-Check Get software for instructions how to install package
+   Check :ref:`get_and_install` for instructions how to install package
 
 Example for Debian/Ubuntu::
 
-   # apt-get install lizardfs-client
+   $ apt-get install lizardfs-client
 
 Set mfsmaster host in /etc/hosts file. For our example configuration it would be::
 
@@ -20,13 +20,13 @@ Set mfsmaster host in /etc/hosts file. For our example configuration it would be
 
 Create a mountpoint::
 
-   # mkdir /mnt/lizardfs
-   # mfsmount /mnt/lizardfs
+   $ mkdir /mnt/lizardfs
+   $ mfsmount /mnt/lizardfs
 
 That's it.
 
 You can now store your files on your brand new installation.
-See man mfsmount or mfsmount -h for more advanced mount options.
+See man *mfsmount* or *mfsmount -h* for more advanced mount options.
 
 
 Windows™ client

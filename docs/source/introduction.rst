@@ -29,12 +29,12 @@ LizardFS keeps metadata (like file names, modification timestamps, directory tre
 
 * Clients which use the data stored on LizardFS. These machines use LizardFS mount to access files in the installation and process them just as those on their local hard drives. Files stored on LizardFS can be seen and simultaneously accessed by as many clients as needed.
 
-.. figure:: architecture.png
+.. figure:: images/lfs.png
    :scale: 50 %
    :align: center
-   :alt: Architecture of LizardFS
+   :alt: Figure 1: Architecture of LizardFS
    
-   Architecture of LizardFS
+   Figure 1: Architecture of LizardFS
 
 Possible application of LizardFS
 ********************************
