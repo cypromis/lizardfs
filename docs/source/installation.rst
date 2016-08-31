@@ -79,7 +79,7 @@ It is also possible to download the source package (SRPM) using::
    # yum install yum-utils
    # yumdownloader --source lizardfs
 
-..imoirtant:: Before upgrading any existing LizardFS installation, please read the instructions here: https://github.com/lizardfs/lizardfs/blob/master/UPGRADE
+..important:: Before upgrading any existing LizardFS installation, please read the instructions here: https://github.com/lizardfs/lizardfs/blob/master/UPGRADE
 
 LizardFS consists of following packages:
 
