@@ -101,46 +101,53 @@ struct folder {
 class Chunk {
 public:
 	static const uint32_t kNumberOfSubfolders = 256;
+	enum { kCurrentDirectoryLayout = 0, kMooseFSDirectoryLayout };
 
-	Chunk(uint64_t chunkId, ChunkPartType type, ChunkState state, ChunkFormat format);
+	Chunk(uint64_t chunkId, ChunkPartType type, ChunkState state);
 	virtual ~Chunk() {};
-	const std::string& filename() const { return filename_; };
+
+	std::string filename() const {
+		return filename_layout_ >= kCurrentDirectoryLayout
+		               ? generateFilenameForVersion(version, filename_layout_)
+		               : std::string();
+	};
+
+	std::string generateFilenameForVersion(uint32_t version, int layout_version = kCurrentDirectoryLayout) const;
+	int renameChunkFile(uint32_t new_version, int new_layout_version = kCurrentDirectoryLayout);
+	void setFilenameLayout(int layout_version) { filename_layout_ = layout_version; }
+
 	virtual off_t getBlockOffset(uint16_t blockNumber) const = 0;
 	virtual off_t getFileSizeFromBlockCount(uint32_t blockCount) const = 0;
 	virtual bool isFileSizeValid(off_t fileSize) const = 0;
+	virtual ChunkFormat chunkFormat() const { return ChunkFormat::IMPROPER; };
 	uint32_t maxBlocksInFile() const;
-	std::string generateFilenameForVersion(uint32_t version, int layout_version = 0) const;
-	int renameChunkFile(const std::string& newFilename);
 	virtual void setBlockCountFromFizeSize(off_t fileSize) = 0;
-	void setFilename(const std::string& filename) { filename_ = filename; }
 	ChunkPartType type() const { return type_; }
-	ChunkFormat chunkFormat() const { return chunkFormat_; };
 	static uint32_t getSubfolderNumber(uint64_t chunkId, int layout_version = 0);
 	static std::string getSubfolderNameGivenNumber(uint32_t subfolderNumber, int layout_version = 0);
 	static std::string getSubfolderNameGivenChunkId(uint64_t chunkId, int layout_version = 0);
 
-	uint64_t chunkid;
-	struct folder *owner;
-	uint32_t version;
-	uint16_t blocks;
-	uint16_t refcount;
-	bool wasChanged;
-	ChunkState state;
-	cntcond *ccond;
-	int fd;
-	uint16_t blockExpectedToBeReadNext;
-	uint8_t validattr;
-	uint8_t todel;
 	Chunk *testnext, **testprev;
 	Chunk *next;
+	cntcond *ccond;
+	struct folder *owner;
+	uint64_t chunkid;
+	uint32_t version;
+	int32_t  fd;
+	uint16_t blocks;
+	uint16_t refcount;
+	uint16_t blockExpectedToBeReadNext;
 
 protected:
 	ChunkPartType type_;
-	std::string filename_;
-
-private:
-	ChunkFormat chunkFormat_;
-
+	int8_t filename_layout_; /*!< <0 - no valid name (empty string)
+	                               0 - current directory layout
+	                              >0 - older directory layouts */
+public:
+	uint8_t validattr;
+	uint8_t todel;
+	uint8_t state;
+	uint8_t wasChanged;
 };
 
 class MooseFSChunk : public Chunk {
@@ -159,6 +166,7 @@ public:
 	off_t getFileSizeFromBlockCount(uint32_t blockCount) const override;
 	bool isFileSizeValid(off_t fileSize) const override;
 	void setBlockCountFromFizeSize(off_t fileSize) override;
+	ChunkFormat chunkFormat() const override { return ChunkFormat::MOOSEFS; };
 	off_t getSignatureOffset() const;
 	void readaheadHeader() const;
 	size_t getHeaderSize() const;
@@ -173,6 +181,7 @@ public:
 	off_t getFileSizeFromBlockCount(uint32_t blockCount) const override;
 	bool isFileSizeValid(off_t fileSize) const override;
 	void setBlockCountFromFizeSize(off_t fileSize) override;
+	ChunkFormat chunkFormat() const override { return ChunkFormat::INTERLEAVED; };
 };
 
 #define IF_MOOSEFS_CHUNK(mc, chunk) \

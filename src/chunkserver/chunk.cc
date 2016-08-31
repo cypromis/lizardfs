@@ -27,24 +27,24 @@
 #include "common/massert.h"
 #include "common/slice_traits.h"
 
-Chunk::Chunk(uint64_t chunkId, ChunkPartType type, ChunkState state, ChunkFormat format)
-	: chunkid(chunkId),
-	  owner(NULL),
-	  version(0),
-	  blocks(0),
-	  refcount(0),
-	  wasChanged(false),
-	  state(state),
-	  ccond(NULL),
-	  fd(-1),
-	  blockExpectedToBeReadNext(0),
-	  validattr(0),
-	  todel(0),
-	  testnext(NULL),
+Chunk::Chunk(uint64_t chunkId, ChunkPartType type, ChunkState state)
+	: testnext(NULL),
 	  testprev(NULL),
 	  next(NULL),
+	  ccond(NULL),
+	  owner(NULL),
+	  chunkid(chunkId),
+	  version(0),
+	  fd(-1),
+	  blocks(0),
+	  refcount(0),
+	  blockExpectedToBeReadNext(0),
 	  type_(type),
-	  chunkFormat_(format){
+	  filename_layout_(-1),
+	  validattr(0),
+	  todel(0),
+	  state(state),
+	  wasChanged(0) {
 }
 
 std::string Chunk::generateFilenameForVersion(uint32_t version, int layout_version) const {
@@ -77,12 +77,18 @@ uint32_t Chunk::maxBlocksInFile() const {
 	return (MFSBLOCKSINCHUNK + data_part_count - 1) / data_part_count;
 }
 
-int Chunk::renameChunkFile(const std::string& newFilename) {
-	int status = rename(filename().c_str(), newFilename.c_str());
+int Chunk::renameChunkFile(uint32_t new_version, int new_layout_version) {
+	std::string old_file_name = filename();
+	std::string new_file_name = generateFilenameForVersion(new_version, new_layout_version);
+
+	int status = rename(old_file_name.c_str(), new_file_name.c_str());
 	if (status < 0) {
 		return status;
 	}
-	setFilename(newFilename);
+
+	filename_layout_ = new_layout_version;
+	version = new_version;
+
 	return 0;
 }
 
@@ -94,7 +100,7 @@ void Chunk::setBlockCountFromFizeSize(off_t fileSize) {
 uint32_t Chunk::getSubfolderNumber(uint64_t chunkId, int layout_version) {
 	// layout version 0 corresponds to current directory/chunk naming convention
 	// values greater than 0 describe older versions (order is not important)
-	return (layout_version == 0 ? chunkId >> 16 : chunkId) & 0xFF;
+	return (layout_version == kCurrentDirectoryLayout ? chunkId >> 16 : chunkId) & 0xFF;
 }
 
 std::string Chunk::getSubfolderNameGivenNumber(uint32_t subfolderNumber, int layout_version) {
@@ -102,7 +108,7 @@ std::string Chunk::getSubfolderNameGivenNumber(uint32_t subfolderNumber, int lay
 	char buffer[16];
 	// layout version 0 corresponds to current directory/chunk naming convention
 	// values greater than 0 describe older versions (order is not important)
-	if (layout_version == 0) {
+	if (layout_version == kCurrentDirectoryLayout) {
 		sprintf(buffer, "chunks%02X", unsigned(subfolderNumber));
 	} else {
 		sprintf(buffer, "%02X", unsigned(subfolderNumber));
@@ -115,7 +121,7 @@ std::string Chunk::getSubfolderNameGivenChunkId(uint64_t chunkId, int layout_ver
 }
 
 MooseFSChunk::MooseFSChunk(uint64_t chunkId, ChunkPartType type, ChunkState state) :
-		Chunk(chunkId, type, state, ChunkFormat::MOOSEFS) {
+		Chunk(chunkId, type, state) {
 }
 
 off_t MooseFSChunk::getBlockOffset(uint16_t blockNumber) const {
@@ -184,7 +190,7 @@ size_t MooseFSChunk::getCrcBlockSize() const {
 }
 
 InterleavedChunk::InterleavedChunk(uint64_t chunkId, ChunkPartType type, ChunkState state) :
-		Chunk(chunkId, type, state, ChunkFormat::INTERLEAVED) {
+		Chunk(chunkId, type, state) {
 }
 
 off_t InterleavedChunk::getBlockOffset(uint16_t blockNumber) const {
