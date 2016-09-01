@@ -13,7 +13,7 @@ BuildRequires:  cmake
 BuildRequires:  pkgconfig
 BuildRequires:  zlib-devel
 BuildRequires:  asciidoc
-%if "%{distro}" == ("el7" || "fc24")
+%if 0%{?el7}%{?fc24} > 0
 BuildRequires:  systemd
 %endif
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -38,7 +38,7 @@ http://lizardfs.com
 %package master
 Summary:        LizardFS master server
 Group:          System Environment/Daemons
-%if "%{distro}" == ("el7" || "fc24")
+%if 0%{?el7}%{?fc24}
 Requires(post): systemd-units
 Requires(preun): systemd-units
 Requires(postun): systemd-units
@@ -50,7 +50,7 @@ LizardFS master (metadata) server together with metarestore utility.
 %package metalogger
 Summary:        LizardFS metalogger server
 Group:          System Environment/Daemons
-%if "%{distro}" == ("el7" || "fc24")
+%if 0%{?el7}%{?fc24}
 Requires(post): systemd-units
 Requires(preun): systemd-units
 Requires(postun): systemd-units
@@ -62,7 +62,7 @@ LizardFS metalogger (metadata replication) server.
 %package chunkserver
 Summary:        LizardFS data server
 Group:          System Environment/Daemons
-%if "%{distro}" == ("el7" || "fc24")
+%if 0%{?el7}%{?fc24}
 Requires(post): systemd-units
 Requires(preun): systemd-units
 Requires(postun): systemd-units
@@ -93,7 +93,7 @@ LizardFS CGI Monitor.
 Summary:        Simple CGI-capable HTTP server to run LizardFS CGI Monitor
 Group:          System Environment/Daemons
 Requires:       %{name}-cgi = %{version}-%{release}
-%if "%{distro}" == ("el7" || "fc24")
+%if 0%{?el7}%{?fc24}
 Requires(post): systemd-units
 Requires(preun): systemd-units
 Requires(postun): systemd-units
@@ -130,29 +130,29 @@ fi
 exit 0
 
 %post master
-%if "%{distro}" == "el6"
+%if 0%{?el6}
 /sbin/chkconfig --add lizardfs-master
 %endif
-%if "%{distro}" == ("el7" || "fc24")
+%if 0%{?el7}%{?fc24}
 %systemd_post lizardfs-master.service
 %endif
 
 %preun master
-%if "%{distro}" == "el6"
+%if 0%{?el6}
 if [ "$1" = 0 ] ; then
 	/sbin/service lizardfs-master stop > /dev/null 2>&1 || :
 	/sbin/chkconfig --del lizardfs-master
 fi
 %endif
-%if "%{distro}" == ("el7" || "fc24")
+%if 0%{?el7}%{?fc24}
 %systemd_preun lizardfs-master.service
 %endif
 
 %postun master
-%if "%{distro}" == "el6"
+%if 0%{?el6}
 /sbin/service lizardfs-master condrestart > /dev/null 2>&1 || :
 %endif
-%if "%{distro}" == ("el7" || "fc24")
+%if 0%{?el7}%{?fc24}
 %systemd_postun_with_restart lizardfs-master.service
 %endif
 
@@ -169,29 +169,29 @@ fi
 exit 0
 
 %post metalogger
-%if "%{distro}" == "el6"
+%if 0%{?el6}
 /sbin/chkconfig --add lizardfs-metalogger
 %endif
-%if "%{distro}" == ("el7" || "fc24")
+%if 0%{?el7}%{?fc24}
 %systemd_post lizardfs-metalogger.service
 %endif
 
 %preun metalogger
-%if "%{distro}" == "el6"
+%if 0%{?el6}
 if [ "$1" = 0 ] ; then
 	/sbin/service lizardfs-metalogger stop > /dev/null 2>&1 || :
 	/sbin/chkconfig --del lizardfs-metalogger
 fi
 %endif
-%if "%{distro}" == ("el7" || "fc24")
+%if 0%{?el7}%{?fc24}
 %systemd_preun lizardfs-metalogger.service
 %endif
 
 %postun metalogger
-%if "%{distro}" == "el6"
+%if 0%{?el6}
 /sbin/service lizardfs-metalogger condrestart > /dev/null 2>&1 || :
 %endif
-%if "%{distro}" == ("el7" || "fc24")
+%if 0%{?el7}%{?fc24}
 %systemd_postun_with_restart lizardfs-metalogger.service
 %endif
 
@@ -216,29 +216,29 @@ fi
 exit 0
 
 %post chunkserver
-%if "%{distro}" == "el6"
+%if 0%{?el6}
 /sbin/chkconfig --add lizardfs-chunkserver
 %endif
-%if "%{distro}" == ("el7" || "fc24")
+%if 0%{?el7}%{?fc24}
 %systemd_post lizardfs-chunkserver.service
 %endif
 
 %preun chunkserver
-%if "%{distro}" == "el6"
+%if 0%{?el6}
 if [ "$1" = 0 ] ; then
 	/sbin/service lizardfs-chunkserver stop > /dev/null 2>&1 || :
 	/sbin/chkconfig --del lizardfs-chunkserver
 fi
 %endif
-%if "%{distro}" == ("el7" || "fc24")
+%if 0%{?el7}%{?fc24}
 %systemd_preun lizardfs-chunkserver.service
 %endif
 
 %postun chunkserver
-%if "%{distro}" == "el6"
+%if 0%{?el6}
 /sbin/service lizardfs-chunkserver condrestart > /dev/null 2>&1 || :
 %endif
-%if "%{distro}" == ("el7" || "fc24")
+%if 0%{?el7}%{?fc24}
 %systemd_postun_with_restart lizardfs-chunkserver.service
 %endif
 
@@ -246,29 +246,29 @@ fi
 ############################################################
 
 %post cgiserv
-%if "%{distro}" == "el6"
+%if 0%{?el6}
 /sbin/chkconfig --add lizardfs-cgiserv
 %endif
-%if "%{distro}" == ("el7" || "fc24")
+%if 0%{?el7}%{?fc24}
 %systemd_post lizardfs-cgiserv.service
 %endif
 
 %preun cgiserv
-%if "%{distro}" == "el6"
+%if 0%{?el6}
 if [ "$1" = 0 ] ; then
 	/sbin/service lizardfs-cgiserv stop > /dev/null 2>&1 || :
 	/sbin/chkconfig --del lizardfs-cgiserv
 fi
 %endif
-%if "%{distro}" == ("el7" || "fc24")
+%if 0%{?el7}%{?fc24}
 %systemd_preun lizardfs-cgiserv.service
 %endif
 
 %postun cgiserv
-%if "%{distro}" == "el6"
+%if 0%{?el6}
 /sbin/service lizardfs-cgiserv condrestart > /dev/null 2>&1 || :
 %endif
-%if "%{distro}" == ("el7" || "fc24")
+%if 0%{?el7}%{?fc24}
 %systemd_postun_with_restart lizardfs-cgiserv.service
 %endif
 
@@ -285,7 +285,7 @@ make %{?_smp_mflags}
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
-%if "%{distro}" == "el6"
+%if 0%{?el6}
 install -d $RPM_BUILD_ROOT%{_initrddir}
 for f in rpm/init-scripts/*.init ; do
         sed -e 's,@sysconfdir@,%{_sysconfdir},;
@@ -293,7 +293,7 @@ for f in rpm/init-scripts/*.init ; do
                 s,@initddir@,%{_initrddir},' $f > $RPM_BUILD_ROOT%{_initrddir}/$(basename $f .init)
 done
 %endif
-%if "%{distro}" == ("el7" || "fc24")
+%if 0%{?el7}%{?fc24}
 install -d -m755 $RPM_BUILD_ROOT/%{_unitdir}
 for f in rpm/service-files/*.service ; do
 	install -m644 "$f" $RPM_BUILD_ROOT/%{_unitdir}/$(basename "$f")
@@ -329,10 +329,10 @@ rm -rf $RPM_BUILD_ROOT
 %{liz_confdir}/mfsmaster.cfg.dist
 %{liz_confdir}/globaliolimits.cfg.dist
 %attr(644,root,root) %{liz_datadir}/metadata.mfs.empty
-%if "%{distro}" == "el6"
+%if 0%{?el6}
 %attr(754,root,root) %{_initrddir}/lizardfs-master
 %endif
-%if "%{distro}" == ("el7" || "fc24")
+%if 0%{?el7}%{?fc24}
 %attr(644,root,root) %{_unitdir}/lizardfs-master.service
 %endif
 
@@ -344,10 +344,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man5/mfsmetalogger.cfg.5*
 %{_mandir}/man8/mfsmetalogger.8*
 %{liz_confdir}/mfsmetalogger.cfg.dist
-%if "%{distro}" == "el6"
+%if 0%{?el6}
 %attr(754,root,root) %{_initrddir}/lizardfs-metalogger
 %endif
-%if "%{distro}" == ("el7" || "fc24")
+%if 0%{?el7}%{?fc24}
 %attr(644,root,root) %{_unitdir}/lizardfs-metalogger.service
 %endif
 
@@ -361,10 +361,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/mfschunkserver.8*
 %{liz_confdir}/mfschunkserver.cfg.dist
 %{liz_confdir}/mfshdd.cfg.dist
-%if "%{distro}" == "el6"
+%if 0%{?el6}
 %attr(754,root,root) %{_initrddir}/lizardfs-chunkserver
 %endif
-%if "%{distro}" == ("el7" || "fc24")
+%if 0%{?el7}%{?fc24}
 %attr(644,root,root) %{_unitdir}/lizardfs-chunkserver.service
 %endif
 
@@ -440,10 +440,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/mfscgiserv
 %{_mandir}/man8/lizardfs-cgiserver.8*
 %{_mandir}/man8/mfscgiserv.8*
-%if "%{distro}" == "el6"
+%if 0%{?el6}
 %attr(754,root,root) %{_initrddir}/lizardfs-cgiserv
 %endif
-%if "%{distro}" == ("el7" || "fc24")
+%if 0%{?el7}%{?fc24}
 %attr(644,root,root) %{_unitdir}/lizardfs-cgiserv.service
 %endif
 
