@@ -1,13 +1,6 @@
 #!/usr/bin/env bash
 set -eux
 
-# os_release="$(lsb_release -si)/$(lsb_release -sr)"
-# case "$os_release" in
-# RedHat*/6*|CentOS/6*) distro=el6 ;;
-#  *) distro=el7 ;;
-# esac
-# echo "Building packages for '$distro'"
-
 os_release="$(cat /etc/redhat-release | tr -dc '0-9' | cut -b 1-2)"
 case "$os_release" in
   6*) distro=el6 ;;
