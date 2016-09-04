@@ -13,7 +13,7 @@ BuildRequires:  cmake
 BuildRequires:  pkgconfig
 BuildRequires:  zlib-devel
 BuildRequires:  asciidoc
-%if 0%{?el7}%{?fc24} > 0
+%if 0%{?el7}%{?fc24}
 BuildRequires:  systemd
 %endif
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
